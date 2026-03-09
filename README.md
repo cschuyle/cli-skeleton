@@ -50,19 +50,18 @@ python3 scripts/greet.py Alice
 └── README.md
 ```
 
-`scripts/`
+**`scripts/`**
 
 Add new scripts as `scripts/<name>.py`; run with `./run.sh <name>`.
-
-`lib/`
+**`lib/`**
 
 Put shared helpers here and use `from lib import ...` in any script so you can develop them together without duplicating code.
 
-`bin`
+**`bin/`**
 
 Directory of symlinks, one per script (e.g. `bin/hello` → `../run.sh`). Run a script as `./bin/hello` or `./bin/greet Alice`. Not committed; create links with `create-script-links.sh`.
 
-`create-script-links.sh`
+**`create-script-links.sh`**
 
 Run from the repo root. Creates a symlink in `bin/` for each `scripts/*.py` (e.g. `bin/hello`, `bin/greet`). Skips creating a link if `bin/<name>` already exists. Run after adding a new script to get a `bin/<name>` shortcut.
 

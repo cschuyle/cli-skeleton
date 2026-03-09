@@ -3,10 +3,12 @@
 
 import sys
 
+from src.greeting import format_greeting
+
 
 def main() -> int:
     name = sys.argv[1] if len(sys.argv) > 1 else "World"
-    print(f"Greetings, {name}!")
+    print(format_greeting(name))
     return 0
 
 

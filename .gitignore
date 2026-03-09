@@ -5,3 +5,6 @@ spec/
 bin/
 *.pyc
 __pycache__/
+
+#direnv
+.envrc

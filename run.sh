@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Run a script by name. Usage: ./run.sh <script> [args...]
-# Or link: ln -s run.sh greet  then ./greet [args...] runs scripts/greet.py
-# Scripts live in scripts/*.py; shared code in lib/.
+# Or link: ln -s run.sh greet  then ./greet [args...] runs scripts/greet.py or scripts/greet.sh
+# Scripts live in scripts/*.py (Python) and scripts/*.sh (shell); shared code in lib/ and src/.
 
 set -e
 # ROOT = directory containing run.sh (resolve symlink when invoked via bin/<name>)
@@ -22,22 +22,27 @@ INVOKED_AS=$(basename "$0")
 if [[ "$INVOKED_AS" != "run.sh" ]]; then
   NAME="$INVOKED_AS"
   SCRIPT="${ROOT}/scripts/${NAME}.py"
-  if [[ ! -f "$SCRIPT" ]]; then
-    echo "No script: scripts/${NAME}.py" >&2
+  SCRIPT_SH="${ROOT}/scripts/${NAME}.sh"
+  if [[ -f "$SCRIPT" ]]; then
+    exec python3 "$SCRIPT" "$@"
+  elif [[ -f "$SCRIPT_SH" ]]; then
+    exec bash "$SCRIPT_SH" "$@"
+  else
+    echo "No script: scripts/${NAME}.py or scripts/${NAME}.sh" >&2
     exit 1
   fi
-  exec python3 "$SCRIPT" "$@"
 fi
 
 # Invoked as run.sh: first arg is script name, or no args = list
 if [[ $# -eq 0 ]]; then
   echo "Usage: $0 <script> [args...]"
   echo ""
-  echo "Scripts:"
-  for f in scripts/*.py; do
+  echo "Scripts (.py and .sh):"
+  for f in scripts/*.py scripts/*.sh; do
     [[ -f "$f" ]] || continue
-    base=$(basename "$f" .py)
-    echo "  $base  →  python3 scripts/${base}.py"
+    base=$(basename "$f")
+    name="${base%.*}"
+    echo "  $name  →  scripts/$base"
   done
   exit 0
 fi
@@ -45,8 +50,12 @@ fi
 NAME="$1"
 shift
 SCRIPT="${ROOT}/scripts/${NAME}.py"
-if [[ ! -f "$SCRIPT" ]]; then
-  echo "No script: scripts/${NAME}.py" >&2
+SCRIPT_SH="${ROOT}/scripts/${NAME}.sh"
+if [[ -f "$SCRIPT" ]]; then
+  exec python3 "$SCRIPT" "$@"
+elif [[ -f "$SCRIPT_SH" ]]; then
+  exec bash "$SCRIPT_SH" "$@"
+else
+  echo "No script: scripts/${NAME}.py or scripts/${NAME}.sh" >&2
   exit 1
 fi
-exec python3 "$SCRIPT" "$@"

@@ -10,12 +10,16 @@ Multiple Python scripts for **macOS** and **Linux** — interpreted, no build st
 ## Quick start
 
 ```bash
-# List scripts
-./run.sh
+# Create bin/hello, bin/greet, etc. (run once or after adding scripts)
+./create-script-links.sh
 
-# Run a script by name (no .py)
+# Run via bin/
+./bin/hello
+./bin/greet Alice
+
+# Or via run.sh: list scripts or run by name
+./run.sh
 ./run.sh hello
-./run.sh greet
 ./run.sh greet Alice
 ```
 
@@ -31,18 +35,22 @@ python3 scripts/greet.py Alice
 
 ```
 .
-├── scripts/           # One .py file per runnable script
+├── bin/                     # Symlinks to run.sh (one per script); run ./create-script-links.sh to create
+├── scripts/                 # One .py file per runnable script
 │   ├── hello.py
 │   ├── greet.py
-│   └── ...            # Add more here
-├── lib/               # Shared code (import from scripts: from lib import ...)
+│   └── ...
+├── lib/                     # Shared code (import from scripts: from lib import ...)
 │   └── __init__.py
-├── run.sh             # ./run.sh <script> [args...]
+├── create-script-links.sh   # Creates bin/<name> links for each scripts/<name>.py
+├── run.sh                   # ./run.sh <script> [args...]; also used by bin/ links
 └── README.md
 ```
 
 - **scripts/** — add new scripts as `scripts/<name>.py`; run with `./run.sh <name>`.
 - **lib/** — put shared helpers here and use `from lib import ...` in any script so you can develop them together without duplicating code.
+- **bin/** — directory of symlinks, one per script (e.g. `bin/hello` → `../run.sh`). Run a script as `./bin/hello` or `./bin/greet Alice`. Not committed; create links with `create-script-links.sh`.
+- **create-script-links.sh** — run from the repo root. Creates a symlink in `bin/` for each `scripts/*.py` (e.g. `bin/hello`, `bin/greet`). Skips creating a link if `bin/<name>` already exists. Run after adding a new script to get a `bin/<name>` shortcut.
 
 ## Optional: venv
 
